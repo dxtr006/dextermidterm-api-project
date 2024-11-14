@@ -1,4 +1,4 @@
-const Component = require('../models/Component');
+const Component = require('../models/component');
 // main controller for creating, getting, updating and deleting components 
 exports.createComponent = async (req, res) => {
   try {
