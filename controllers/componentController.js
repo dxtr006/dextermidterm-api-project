@@ -1,5 +1,6 @@
 const Component = require('../models/component');
-// main controller for creating, getting, updating and deleting components 
+
+// Controller for CRUD operations on components
 exports.createComponent = async (req, res) => {
   try {
     const newComponent = new Component(req.body);
