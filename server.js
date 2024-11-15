@@ -6,6 +6,10 @@ dotenv.config();
 
 const app = express();
 
+app.get('/', (req, res) => {
+  res.send('Welcome to Circuit Surge');
+});
+
 //Instantiate DB
 mongoose.connect(process.env.DB_URI)
   .then(() => console.log('MongoDB Connected'))
@@ -26,3 +30,5 @@ const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 module.exports = server;
+
+app.use(express.static('public'));
