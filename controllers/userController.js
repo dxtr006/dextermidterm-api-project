@@ -1,4 +1,3 @@
-
 //note-(adam) I was testing adding user stuff you guys can keep this stuff commented out or if u wanna mess with it go for it kinda works 
 // 11/13/24@9:30pm(kass) I like this, uncommented, added an option for the user to login with either username or email, as well as a check for dupes
 
@@ -8,30 +7,34 @@ const bcrypt = require('bcryptjs');
 
 exports.register = async (req, res) => {
   try {
-    console.log('Register function triggered:', req.body);
+    console.log('Register function triggered:', req.body); // Log incoming data
     const { username, email, password } = req.body;
-    console.log('Parsed inputs:', { username, email, password });
-    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
-    if (existingUser) {
-      console.log('User already exists:', existingUser);
-      return res.status(400).json({
-        error: 'Username or email already in use.',
-        existingUser: existingUser.username,
-      });
+
+    if (!username || !email || !password) {
+      return res.status(400).json({ error: 'All fields are required.' });
     }
 
-    // Create and save the new user
+    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    if (existingUser) {
+      console.log('User already exists:', existingUser); // Log existing user
+      return res.status(400).json({ error: 'Username or email already in use.' });
+    }
+
+    // Hash password before saving
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const user = new User({
       username,
       email,
-      password,
+      password: hashedPassword,
     });
+
     await user.save();
-    console.log('User successfully registered:', user);
-    res.status(201).json({ message: 'User registered.' });
+    console.log('User successfully registered:', user); // Log successful registration
+    res.status(201).json({ message: 'User registered successfully.' });
   } catch (error) {
-    console.error('Error in register function:', error);
-    res.status(400).json({ error: error.message });
+    console.error('Error in register function:', error); // Log errors
+    res.status(500).json({ error: 'Internal server error.' });
   }
 };
 
